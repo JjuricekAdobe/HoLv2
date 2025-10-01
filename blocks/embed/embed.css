@@ -1,3 +1,5 @@
+/* Embed block: full-bleed width + responsive height */
+
 /* Full-bleed across the page (beyond content column) */
 .embed {
   width: 100vw;
@@ -18,8 +20,8 @@
 /* Responsive media wrapper: width 100%, height driven by aspect-ratio */
 .embed .embed-media {
   width: 100%;
-  aspect-ratio: var(--embed-aspect, 16 / 9);
   position: relative;
+  aspect-ratio: var(--embed-aspect, 16 / 9);
 }
 
 /* Iframe fills the media box */
@@ -66,3 +68,33 @@
   box-sizing: border-box;
   position: relative;
   display: block;
+  transform: scale(3);
+  width: 22px;
+  height: 22px;
+  border: 2px solid;
+  border-radius: 20px;
+  padding: 0;
+  background: transparent;
+}
+
+.embed .embed-placeholder-play button::before {
+  content: "";
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  width: 0;
+  height: 10px;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid currentColor;
+  top: 4px;
+  left: 7px;
+}
+
+/* Optional: reduce margins on narrow screens */
+@media (max-width: 600px) {
+  .embed {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+}
