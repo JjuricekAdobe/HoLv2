@@ -17,15 +17,27 @@
   display: block;
 }
 
-/* Responsive media wrapper: width 100%, height driven by aspect-ratio */
+/* Base wrapper: use padding-bottom (56.25%) as a safe default */
 .embed .embed-media {
-  width: 100%;
   position: relative;
-  aspect-ratio: var(--embed-aspect, 16 / 9);
+  width: 100%;
 }
 
-/* Iframe fills the media box */
+/* Fallback: classic intrinsic ratio box */
+.embed .embed-media::before {
+  content: "";
+  display: block;
+  /* default 16:9 */
+  padding-bottom: var(--embed-padding, 56.25%);
+}
+
+/* Iframe fills the box (fallback path) */
 .embed .embed-media > iframe {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: 0;
@@ -33,8 +45,12 @@
 }
 
 /* Twitter auto-height (widgets.js manages height) */
+.embed .embed-media.embed-media--auto::before {
+  content: none;
+  padding-bottom: 0;
+}
+
 .embed .embed-media.embed-media--auto {
-  aspect-ratio: auto;
   height: auto;
 }
 
@@ -46,8 +62,14 @@
 /* Placeholder: full width, 16:9 by default */
 .embed .embed-placeholder {
   width: 100%;
-  aspect-ratio: 16 / 9;
   position: relative;
+}
+
+/* Placeholder uses the same safe fallback ratio */
+.embed .embed-placeholder::before {
+  content: "";
+  display: block;
+  padding-bottom: 56.25%;
 }
 
 .embed .embed-placeholder > * {
@@ -55,7 +77,10 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .embed .embed-placeholder picture img {
@@ -89,6 +114,29 @@
   border-left: 6px solid currentColor;
   top: 4px;
   left: 7px;
+}
+
+/* Progressive enhancement: use aspect-ratio when supported */
+@supports (aspect-ratio: 1 / 1) {
+  .embed .embed-media {
+    /* Keep width 100%; height is driven by aspect-ratio */
+    aspect-ratio: var(--embed-aspect, 16 / 9);
+  }
+  .embed .embed-media::before {
+    content: none;
+  }
+  .embed .embed-media > iframe {
+    position: static;
+    width: 100%;
+    height: 100%;
+  }
+
+  .embed .embed-placeholder {
+    aspect-ratio: 16 / 9;
+  }
+  .embed .embed-placeholder::before {
+    content: none;
+  }
 }
 
 /* Optional: reduce margins on narrow screens */
